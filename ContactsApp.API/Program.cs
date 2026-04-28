@@ -11,6 +11,7 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddSwaggerWithJwt();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAngularCors();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
