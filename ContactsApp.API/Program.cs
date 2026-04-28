@@ -16,6 +16,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
+await app.Services.SeedDataAsync();
+
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseCors(CorsExtensions.ANGULAR_POLICY);
@@ -35,8 +37,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-await app.Services.SeedDataAsync();
 
 app.Run();
 

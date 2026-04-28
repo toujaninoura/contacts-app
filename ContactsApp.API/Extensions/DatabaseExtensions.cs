@@ -1,5 +1,5 @@
-using ContactsApp.Domain.Entities;
 using ContactsApp.Infrastructure.Data;
+using ContactsApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

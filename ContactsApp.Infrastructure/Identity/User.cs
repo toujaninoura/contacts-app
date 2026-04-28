@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace ContactsApp.Domain.Entities;
+namespace ContactsApp.Infrastructure.Identity;
 
 public class User : IdentityUser
 {

@@ -1,5 +1,6 @@
 using ContactsApp.Domain.Entities;
 using ContactsApp.Infrastructure.Data.Configurations;
+using ContactsApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,5 +18,6 @@ public class AppDbContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new ContactConfiguration());
+        builder.ApplyConfiguration(new UserConfiguration());
     }
 }
