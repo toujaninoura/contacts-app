@@ -1,0 +1,58 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/repositories.config
+
+## ASP.NET
+wwwroot/
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+
+## Secrets
+*.env
+.env
+secrets.json
+appsettings.Secrets.json
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Rider
+.idea/
+*.iml
+
+## VS Code
+.vscode/
