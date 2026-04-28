@@ -16,6 +16,8 @@ var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseCors(CorsExtensions.ANGULAR_POLICY);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,8 +28,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors(CorsExtensions.ANGULAR_POLICY);
 
 app.UseAuthentication();
 app.UseAuthorization();
