@@ -1,11 +1,13 @@
 using ContactsApp.API.Extensions;
 using ContactsApp.API.Middlewares;
+using ContactsApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddSwaggerWithJwt();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAngularCors();
@@ -33,6 +35,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+await app.Services.SeedDataAsync();
 
 app.Run();
 
