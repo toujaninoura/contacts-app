@@ -1,4 +1,5 @@
 using AutoMapper;
+using ContactsApp.Application.DTOs;
 using ContactsApp.Application.DTOs.Contacts;
 using ContactsApp.Application.Interfaces;
 using ContactsApp.Domain.Entities;
@@ -23,10 +24,16 @@ public class ContactService : IContactService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<ContactDto>> GetAllAsync(string? search = null)
+    public async Task<PagedResponse<ContactDto>> GetAllAsync(int page, int pageSize, string? search = null)
     {
-        var contacts = await _contactRepository.GetAllAsync(search);
-        return _mapper.Map<IEnumerable<ContactDto>>(contacts);
+        var allContacts = await _contactRepository.GetAllAsync(search);
+        var totalCount = allContacts.Count();
+        var items = allContacts
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => _mapper.Map<ContactDto>(c));
+
+        return PagedResponse<ContactDto>.Create(items, page, pageSize, totalCount);
     }
 
     public async Task<ContactDto> GetByIdAsync(int id)

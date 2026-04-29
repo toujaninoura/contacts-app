@@ -16,7 +16,9 @@ public class ContactRepository : IContactRepository
 
     public async Task<IEnumerable<Contact>> GetAllAsync(string? search = null)
     {
-        var query = _context.Contacts.AsNoTracking();
+        var query = _context.Contacts
+            .AsNoTracking()
+            .Where(c => !c.IsDeleted);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -33,6 +35,7 @@ public class ContactRepository : IContactRepository
     {
         return await _context.Contacts
             .AsNoTracking()
+            .Where(c => !c.IsDeleted)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 

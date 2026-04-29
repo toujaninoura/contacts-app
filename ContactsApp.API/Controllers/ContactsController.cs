@@ -21,13 +21,16 @@ public class ContactsController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>Get all contacts, optionally filtered by search term.</summary>
+    /// <summary>Get all contacts with pagination, optionally filtered by search term.</summary>
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IEnumerable<ContactDto>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll([FromQuery] string? search = null)
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<ContactDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null)
     {
-        var contacts = await _contactService.GetAllAsync(search);
-        return Ok(ApiResponse<IEnumerable<ContactDto>>.Ok(contacts));
+        var result = await _contactService.GetAllAsync(page, pageSize, search);
+        return Ok(ApiResponse<PagedResponse<ContactDto>>.Ok(result));
     }
 
     /// <summary>Get a contact by its identifier.</summary>

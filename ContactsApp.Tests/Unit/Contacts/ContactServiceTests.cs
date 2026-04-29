@@ -1,4 +1,5 @@
 using AutoMapper;
+using ContactsApp.Application.DTOs;
 using ContactsApp.Application.DTOs.Contacts;
 using ContactsApp.Application.Interfaces;
 using ContactsApp.Application.Services;
@@ -33,16 +34,10 @@ public class ContactServiceTests
     // ------------------------------------------------------------------ GetAllAsync
 
     [Test]
-    public async Task GetAllAsync_WhenContactsExist_ShouldReturnContactDtos()
+    public async Task GetAllAsync_WhenContactsExist_ShouldReturnPagedResponse()
     {
         // Arrange
         var contacts = new List<Contact>
-        {
-            new() { Id = 1, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com" },
-            new() { Id = 2, FirstName = "Bob", LastName = "Martin", Email = "bob@example.com" }
-        };
-
-        var dtos = new List<ContactDto>
         {
             new() { Id = 1, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com" },
             new() { Id = 2, FirstName = "Bob", LastName = "Martin", Email = "bob@example.com" }
@@ -53,15 +48,45 @@ public class ContactServiceTests
             .ReturnsAsync(contacts);
 
         _mapperMock
-            .Setup(x => x.Map<IEnumerable<ContactDto>>(contacts))
-            .Returns(dtos);
+            .Setup(x => x.Map<ContactDto>(It.IsAny<Contact>()))
+            .Returns((Contact c) => new ContactDto { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, Email = c.Email });
 
         // Act
-        var result = await _sut.GetAllAsync();
+        var result = await _sut.GetAllAsync(1, 10, null);
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count(), Is.EqualTo(2));
+        Assert.That(result.Data.Count(), Is.EqualTo(2));
+        Assert.That(result.TotalCount, Is.EqualTo(2));
+        Assert.That(result.Page, Is.EqualTo(1));
+        Assert.That(result.PageSize, Is.EqualTo(10));
+    }
+
+    [Test]
+    public async Task GetAllAsync_WithPagination_ShouldReturnCorrectPage()
+    {
+        // Arrange
+        var contacts = Enumerable.Range(1, 15)
+            .Select(i => new Contact { Id = i, FirstName = $"User{i}", LastName = "Test", Email = $"user{i}@example.com" })
+            .ToList();
+
+        _contactRepositoryMock
+            .Setup(x => x.GetAllAsync(null))
+            .ReturnsAsync(contacts);
+
+        _mapperMock
+            .Setup(x => x.Map<ContactDto>(It.IsAny<Contact>()))
+            .Returns((Contact c) => new ContactDto { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, Email = c.Email });
+
+        // Act
+        var result = await _sut.GetAllAsync(2, 10, null);
+
+        // Assert
+        Assert.That(result.Data.Count(), Is.EqualTo(5));
+        Assert.That(result.TotalCount, Is.EqualTo(15));
+        Assert.That(result.TotalPages, Is.EqualTo(2));
+        Assert.That(result.HasNext, Is.False);
+        Assert.That(result.HasPrev, Is.True);
     }
 
     [Test]
@@ -73,25 +98,22 @@ public class ContactServiceTests
         {
             new() { Id = 1, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com" }
         };
-        var dtos = new List<ContactDto>
-        {
-            new() { Id = 1, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com" }
-        };
 
         _contactRepositoryMock
             .Setup(x => x.GetAllAsync(search))
             .ReturnsAsync(contacts);
 
         _mapperMock
-            .Setup(x => x.Map<IEnumerable<ContactDto>>(contacts))
-            .Returns(dtos);
+            .Setup(x => x.Map<ContactDto>(It.IsAny<Contact>()))
+            .Returns((Contact c) => new ContactDto { Id = c.Id, FirstName = c.FirstName, LastName = c.LastName, Email = c.Email });
 
         // Act
-        var result = await _sut.GetAllAsync(search);
+        var result = await _sut.GetAllAsync(1, 10, search);
 
         // Assert
         _contactRepositoryMock.Verify(x => x.GetAllAsync(search), Times.Once);
-        Assert.That(result.Count(), Is.EqualTo(1));
+        Assert.That(result.Data.Count(), Is.EqualTo(1));
+        Assert.That(result.TotalCount, Is.EqualTo(1));
     }
 
     // ------------------------------------------------------------------ GetByIdAsync
