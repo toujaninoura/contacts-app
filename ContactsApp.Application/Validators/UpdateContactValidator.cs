@@ -8,20 +8,20 @@ public class UpdateContactValidator : AbstractValidator<UpdateContactDto>
     public UpdateContactValidator()
     {
         RuleFor(x => x.FirstName)
-            .NotEmpty().WithMessage("FirstName is required.")
-            .MaximumLength(100).WithMessage("FirstName must not exceed 100 characters.");
+            .NotEmpty().WithMessage("Le nom est obligatoire")
+            .MaximumLength(100).WithMessage("Le nom ne doit pas dépasser 100 caractères");
 
         RuleFor(x => x.LastName)
-            .NotEmpty().WithMessage("LastName is required.")
-            .MaximumLength(100).WithMessage("LastName must not exceed 100 characters.");
+            .NotEmpty().WithMessage("Le prénom est obligatoire")
+            .MaximumLength(100).WithMessage("Le prénom ne doit pas dépasser 100 caractères");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email is required.")
-            .EmailAddress().WithMessage("Email must be a valid email address.")
-            .MaximumLength(255).WithMessage("Email must not exceed 255 characters.");
+            .NotEmpty().WithMessage("Email invalide")
+            .EmailAddress().WithMessage("Email invalide")
+            .MaximumLength(255).WithMessage("L'email ne doit pas dépasser 255 caractères");
 
         RuleFor(x => x.Phone)
-            .MaximumLength(20).WithMessage("Phone must not exceed 20 characters.")
+            .MaximumLength(20).WithMessage("Le téléphone ne doit pas dépasser 20 caractères")
             .When(x => x.Phone is not null);
     }
 }
