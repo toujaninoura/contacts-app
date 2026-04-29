@@ -256,6 +256,90 @@ public class ContactValidatorTests
         result.ShouldNotHaveAnyValidationErrors();
     }
 
+    // ------------------------------------------------------------------ CreateContactValidator - Phone boundary
+
+    [Test]
+    public void CreateContactValidator_WhenPhoneIsExactly20Chars_ShouldPass()
+    {
+        var dto = new CreateContactDto
+        {
+            FirstName = "Alice",
+            LastName = "Dupont",
+            Email = "alice@example.com",
+            Phone = new string('0', 20)
+        };
+
+        var result = _createValidator.TestValidate(dto);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.Phone);
+    }
+
+    [Test]
+    public void CreateContactValidator_WhenPhoneIsExactly21Chars_ShouldFail()
+    {
+        var dto = new CreateContactDto
+        {
+            FirstName = "Alice",
+            LastName = "Dupont",
+            Email = "alice@example.com",
+            Phone = new string('0', 21)
+        };
+
+        var result = _createValidator.TestValidate(dto);
+
+        result.ShouldHaveValidationErrorFor(x => x.Phone);
+    }
+
+    // ------------------------------------------------------------------ UpdateContactValidator - Phone boundary
+
+    [Test]
+    public void UpdateContactValidator_WhenPhoneIsExactly20Chars_ShouldPass()
+    {
+        var dto = new UpdateContactDto
+        {
+            FirstName = "Alice",
+            LastName = "Dupont",
+            Email = "alice@example.com",
+            Phone = new string('0', 20)
+        };
+
+        var result = _updateValidator.TestValidate(dto);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.Phone);
+    }
+
+    [Test]
+    public void UpdateContactValidator_WhenPhoneIsExactly21Chars_ShouldFail()
+    {
+        var dto = new UpdateContactDto
+        {
+            FirstName = "Alice",
+            LastName = "Dupont",
+            Email = "alice@example.com",
+            Phone = new string('0', 21)
+        };
+
+        var result = _updateValidator.TestValidate(dto);
+
+        result.ShouldHaveValidationErrorFor(x => x.Phone);
+    }
+
+    [Test]
+    public void UpdateContactValidator_WhenPhoneIsNull_ShouldPass()
+    {
+        var dto = new UpdateContactDto
+        {
+            FirstName = "Alice",
+            LastName = "Dupont",
+            Email = "alice@example.com",
+            Phone = null
+        };
+
+        var result = _updateValidator.TestValidate(dto);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.Phone);
+    }
+
     // ------------------------------------------------------------------ ContactService - email conflict (via service)
 
     [Test]

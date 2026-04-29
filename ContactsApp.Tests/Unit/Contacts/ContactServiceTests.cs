@@ -34,6 +34,26 @@ public class ContactServiceTests
     // ------------------------------------------------------------------ GetAllAsync
 
     [Test]
+    public async Task GetAllAsync_WhenNoContacts_ShouldReturnEmptyPagedResponse()
+    {
+        // Arrange
+        _contactRepositoryMock
+            .Setup(x => x.GetAllAsync(null))
+            .ReturnsAsync(new List<Contact>());
+
+        // Act
+        var result = await _sut.GetAllAsync(1, 10, null);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Data.Count(), Is.EqualTo(0));
+        Assert.That(result.TotalCount, Is.EqualTo(0));
+        Assert.That(result.TotalPages, Is.EqualTo(0));
+        Assert.That(result.HasNext, Is.False);
+        Assert.That(result.HasPrev, Is.False);
+    }
+
+    [Test]
     public async Task GetAllAsync_WhenContactsExist_ShouldReturnPagedResponse()
     {
         // Arrange
