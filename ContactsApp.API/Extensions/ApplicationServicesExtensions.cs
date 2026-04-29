@@ -1,9 +1,11 @@
+using ContactsApp.Application.DTOs;
 using ContactsApp.Application.Interfaces;
 using ContactsApp.Application.Services;
 using ContactsApp.Application.Validators;
 using ContactsApp.Infrastructure.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ContactsApp.API.Extensions;
 
@@ -20,6 +22,20 @@ public static class ApplicationServicesExtensions
 
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                var response = ApiResponse<object>.Fail("Validation failed", errors);
+                return new BadRequestObjectResult(response);
+            };
+        });
 
         return services;
     }
