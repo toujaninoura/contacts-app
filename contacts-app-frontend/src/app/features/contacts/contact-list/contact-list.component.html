@@ -1,0 +1,89 @@
+<div class="contact-list-container">
+  <header class="contact-list-header">
+    <h1 class="contact-list-title">Mes contacts</h1>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="goToNewContact()" data-testid="add-contact-btn">
+        + Ajouter un contact
+      </button>
+      <button class="btn btn-secondary" (click)="logout()" data-testid="logout-btn">
+        Déconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="search-wrapper">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Rechercher par nom..."
+      [formControl]="searchControl"
+      data-testid="search-input"
+    />
+  </div>
+
+  <div class="table-wrapper">
+    <table class="contact-table" *ngIf="contacts.length > 0; else emptyBlock">
+      <thead>
+        <tr>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contact of contacts; trackBy: trackById">
+          <td>{{ contact.firstName }}</td>
+          <td>{{ contact.lastName }}</td>
+          <td>{{ contact.email }}</td>
+          <td>{{ contact.phone ?? '-' }}</td>
+          <td class="actions-cell">
+            <button
+              class="btn btn-secondary btn-sm"
+              (click)="goToEdit(contact.id)"
+              [attr.data-testid]="'edit-btn-' + contact.id"
+            >
+              Modifier
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              (click)="deleteContact(contact.id)"
+              [attr.data-testid]="'delete-btn-' + contact.id"
+            >
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #emptyBlock>
+      <p class="empty-message" data-testid="empty-message">Aucun contact trouvé</p>
+    </ng-template>
+  </div>
+
+  <footer class="pagination" *ngIf="pagedData && pagedData.totalPages > 0">
+    <button
+      class="btn btn-secondary btn-sm"
+      (click)="goToPrevPage()"
+      [disabled]="!pagedData.hasPrev"
+      data-testid="prev-btn"
+    >
+      &lt; Précédent
+    </button>
+
+    <span class="pagination-info" data-testid="pagination-info">
+      Page {{ pagedData.page }} / {{ pagedData.totalPages }}
+    </span>
+
+    <button
+      class="btn btn-secondary btn-sm"
+      (click)="goToNextPage()"
+      [disabled]="!pagedData.hasNext"
+      data-testid="next-btn"
+    >
+      Suivant &gt;
+    </button>
+  </footer>
+</div>
